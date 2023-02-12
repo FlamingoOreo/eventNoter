@@ -223,6 +223,8 @@ function LoadCurrentTime() {
 
 
 document.addEventListener("keydown", function(event) {
+  console.log(event.target.tagName)
+  if(event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA" || event.target.tagName === "TD") return;
   if (event.code === "Space" || event.code === "Enter") {
     if (!window.isTimerRunning) {
       startBtn.click();
