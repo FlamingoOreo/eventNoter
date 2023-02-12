@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Tracker</title>
+    <link href="stylesheets/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script type="text/javascript" src='js/bootstrap.min.js'></script>
+</head>
+<body class="position-relative">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light m-1">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-item nav-link" href="#"> Home</a>
+      </li>
+      <div class="dropdown" data-bs-toggle="dropdown">
+        <li class="nav-item nav-link dropdown">Settings</li>
+         <div class="dropdown-menu ">
+           <a class="dropdown-item" id="exportBtn" href="#">Export</a>
+           <a class="dropdown-item" id="importBtn" href="#">Import</a>
+           <a class="dropdown-item" id="saveBtn" href="#">Save</a>
+         </div>
+     </div>
+    </ul>
+</nav>
+  <div class="container border border-secondary" id="zoomContainer" style="margin-top: 100px; display: flex; position: relative;">
+    <div>
+      <img src="images/logo.jpg" style="width: 180px; height: 180px; position: absolute; top: -50px; left: 0;" alt="Stavanger Tech Logo">
+  </div>
+      <div style="width: 70%;">
+          <p id="timer" class="display-5 text-center">Total Log Time:</p>
+          <div class="container" id="dashboard">
+              <table class="table table-bordered table-hover responsive" id="dashboardTable">
+                  <thead>
+                      <th scope="col" class="text-center"> Timestamp</th>
+                      <th scope="col" class="text-center">Notes</th>
+                      <th scope="col" class="text-center">Category</th>
+                  </thead>
+                  <tbody id="tableBody">
+                    <% preset.forEach((data)=>{ %>
+                      <% let parts = data.timestamp.split("Date:") %>
+                      <% let totalTime = parts[0]; %>
+                      <% let date = "Date: " + parts[1]; %>
+                      <tr>
+                          <td><%=totalTime%><br><%=date%></td>
+                          <td class="displayText"><%=data.note%></td>
+                          <td class="displayText"><%=data.category%></td>
+                          <td><button class="deleteBtn btn btn-danger">X</button></td>
+                      </tr>
+                  <% }); %>
+                  
+                  </tbody>
+              </table>
+          </div>
+          <div class="row">
+              <span class="col-1"> </span>
+              <button id="startBtn" class="col-3 btn btn-secondary">Start</button>
+              <span class="col-4"> </span>
+              <button id="stopBtn" class="col-3 btn btn-secondary" disabled>Stop</button>
+              <span class="col-1"></span>
+          </div>
+          <p class="text-center" id="localTime"></p>
+      </div>
+      <div style="width: 30%; padding-left: 20px;">
+          <p class="text-center" style="font-weight: bold;">Event Quicklist</p>
+          <table class="table table-bordered" id="quickBoard">
+              <tbody>
+               <% data.forEach((data)=>{ %>
+                  <tr>
+                    <td><%=data.note%></td>
+                    <td><%=data.category%></td>
+                    </tr>
+              <% }) %>
+              </tbody>
+          </table>
+          <div class="row" style="margin-bottom: 10px;">
+              <span class="col-1"> </span>
+              <button id="editBtn" class="col-3 btn btn-secondary">Edit list</button>
+              <span class="col-7"> </span>
+          </div>
+      </div>
+  </div>
+  <script>
+    var deleteBtns = document.querySelectorAll('.deleteBtn');
+    for (var i = 0; i < deleteBtns.length; i++) {
+        deleteBtns[i].addEventListener('click', function() {
+            var tr = this.closest('tr');
+            tr.parentNode.removeChild(tr);
+        });
+    }
+    </script>
+    
+  <script src="../jquery.js"></script>
+  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="javascripts/main.js"></script>
+</body>
+
+
+</html>

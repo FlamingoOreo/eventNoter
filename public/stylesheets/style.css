@@ -1,0 +1,70 @@
+body {
+  padding: 50px;
+  font: 14px 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+a {
+  color: #00B7FF;
+  font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+table.table-bordered{
+  border-width: thin !important;
+  border: 2px solid #212529;
+  border-radius: 15px !important;
+
+}
+tbody{
+  font-family: Calibri;
+  color: #212529;
+  text-align: center;
+}
+h1,p{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: #212529;
+}
+container{
+  margin-top: 10px;
+}
+#zoomContainer{
+  zoom: 1.25;
+}
+
+.selected{
+  background-color: #a8aca970 !important;
+}
+input[type="text"] {
+  width: 300px;
+  height: 40px;
+  font-size: 18px;
+  }
+.displayText{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  
+}
+
+nav{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.nav-item, .nav-link{
+  color: #807676 !important;
+  border-left: 1px solid #fff;
+  text-align: center;
+}
+.navbar-nav > .active > a {
+  font-weight: bolder;    
+}
+.nav-item > a:hover {
+  color: #777a7a !important;
+}
+.dropdown-item{
+  color: #212529 !important;
+  border: 2px solid #fff !important;
+}
+.dropdown-item:hover{
+  color: #af8a8a!important;
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
