@@ -26,9 +26,6 @@
     </ul>
 </nav>
   <div class="container border border-secondary" id="zoomContainer" style="margin-top: 100px; display: flex; position: relative;">
-    <div>
-      <img src="images/logo.jpg" style="width: 180px; height: 180px; position: absolute; top: -50px; left: 0;" alt="Stavanger Tech Logo">
-  </div>
       <div style="width: 70%;">
           <p id="timer" class="display-5 text-center">Total Log Time:</p>
           <div class="container" id="dashboard">
@@ -82,6 +79,10 @@
           </div>
       </div>
   </div>
+  <div style="margin-top: -50px;">
+    <img src="images/logo.png" class="img-fluid" style="max-width: 650px; max-height: 650px;" alt="Stavanger Tech Logo">
+  </div>
+  
   <script>
     var deleteBtns = document.querySelectorAll('.deleteBtn');
     for (var i = 0; i < deleteBtns.length; i++) {

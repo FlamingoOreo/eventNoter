@@ -225,9 +225,8 @@ function LoadCurrentTime() {
 
 
 document.addEventListener("keydown", function(event) {
-  console.log(event.target.tagName)
-  if(event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA" || event.target.tagName === "TD") return;
-  if (event.code === "Space" || event.code === "Enter") {
+  if(event.target.tagName === "TEXTAREA" || event.target.tagName === "TD") return;
+  if (event.code === "Space" && event.target.tagName != "INPUT" || event.code === "Enter" && event.target.tagName != "INPUT") {
     if (!window.isTimerRunning) {
       startBtn.click();
       window.isTimerRunning = true;
@@ -240,6 +239,20 @@ document.addEventListener("keydown", function(event) {
       window.isTimerRunning = false;
     }
   }
+
+  if(event.target.tagName === "INPUT"){
+    if(event.code === "Enter"){
+      clearInterval(timerInterval);
+      timerDisplay.innerHTML = "Total Log Time:";
+      startBtn.removeAttribute("disabled");
+      stopBtn.setAttribute("disabled",true)
+      stopEvent()
+      window.isTimerRunning = false;
+    }
+  }
+    index = parseInt(event.code.replace("Digit", ""));
+    let tableRow = $("#quickBoard tbody tr:eq(" + index + ")");
+    tableRow.click();
 });
 
   window.addEventListener("load", LoadCurrentTime);
