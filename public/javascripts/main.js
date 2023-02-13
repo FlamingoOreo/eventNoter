@@ -48,24 +48,34 @@ function padMilliseconds(num) {
 
 let event
 function createNewEvent(quickNote, quickCategory){
-    const currentdate = new Date(); 
-    const elapsedTime = Date.now() - startTime;
-    const elapsedSeconds = Math.floor(elapsedTime / 1000);
-    const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-    const elapsedHours = Math.floor(elapsedMinutes / 60);
-    if(!active) return
-    if(quickNote && quickCategory){
-      $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())} </td><td contenteditable='true'>${quickNote}
-      </td><td contenteditable='true'>${quickCategory}
-      </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
-    }else{
-        $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')}<br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td contenteditable='true'><td contenteditable='true'>
+  const currentdate = new Date(); 
+  const elapsedTime = Date.now() - startTime;
+  const elapsedSeconds = Math.floor(elapsedTime / 1000);
+  const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  if(!active) return
+  if(quickNote && quickCategory){
+    $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())} </td><td contenteditable='true'>${quickNote}
+    </td><td contenteditable='true'>${quickCategory}
     </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
-    }
-    $(".deleteBtn").click(function(){
-        $(this).closest("tr").remove();
-    });
+  }else{
+      $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')}<br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td contenteditable='true'><td contenteditable='true'>
+  </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
+  }
+  $(".deleteBtn").click(function(){
+      $(this).closest("tr").remove();
+  });
 
+  $("td[contenteditable='true']").keydown(function(e) {
+      const $tds = $(this).closest("tr").find("td[contenteditable='true']");
+      let index = $tds.index(this);
+      if (e.which === 39 && index < $tds.length - 1) {
+          $tds.eq(index + 1).focus();
+      }
+      if (e.which === 37 && index > 0) {
+          $tds.eq(index - 1).focus();
+      }
+  });
 }
 
 
