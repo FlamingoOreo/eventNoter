@@ -3,10 +3,11 @@ const stopBtn = document.getElementById("stopBtn")
 const timerDisplay = document.getElementById("timer");
 let startTime;
 let timerInterval;
-
+let active = false;
 
 
 function startTimer(quickNote, quickCategory) {
+    if(active) return
     if(quickNote && quickCategory){
             startTime = Date.now();
         timerDisplay.style.display = "block";
@@ -20,6 +21,7 @@ function startTimer(quickNote, quickCategory) {
         }, 1);
         startBtn.setAttribute("disabled",true);
         stopBtn.removeAttribute("disabled");
+        active = true;
         createNewEvent(quickNote, quickCategory);
     }     else{
             startTime = Date.now();
@@ -34,6 +36,7 @@ function startTimer(quickNote, quickCategory) {
             }, 1);
             startBtn.setAttribute("disabled",true);
             stopBtn.removeAttribute("disabled");
+            active = true;
             createNewEvent();
         }
     }
@@ -45,14 +48,12 @@ stopBtn.addEventListener('click',function(){
     timerDisplay.innerHTML = "Total Log Time:";
     startBtn.removeAttribute("disabled");
     stopBtn.setAttribute("disabled",true)
-
     stopEvent()
 })
 function pad(num) {
     return num < 10 ? '0' + num : num;
     }
-    
-    function padMilliseconds(num) {
+function padMilliseconds(num) {
     return num < 100 ? '0' + (num < 10 ? '0' + num : num) : num;
     }
 function createNewEvent(quickNote, quickCategory){
@@ -69,6 +70,7 @@ function createNewEvent(quickNote, quickCategory){
 }
 
 function stopEvent() {
+    active = false;
     const newestRow = $("#dashboard tbody tr:first-child");
     const elapsedTime = Date.now() - startTime;
     const elapsedSeconds = Math.floor(elapsedTime / 1000);
