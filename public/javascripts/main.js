@@ -55,35 +55,56 @@ function createNewEvent(quickNote, quickCategory){
   const elapsedHours = Math.floor(elapsedMinutes / 60);
   if(!active) return
   if(quickNote && quickCategory){
-    $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())} </td><td contenteditable='true'>${quickNote}
-    </td><td contenteditable='true'>${quickCategory}
+    $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())} </td><td contenteditable='true'>${quickNote}</td><td contenteditable='true'>${quickCategory}
     </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
   }else{
-      $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')}<br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td contenteditable='true'><td contenteditable='true'>
+      $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td contenteditable='true'><td contenteditable='true'>
   </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
   }
   $(".deleteBtn").click(function(){
       $(this).closest("tr").remove();
+
   });
 
-  $("td[contenteditable='true']").keydown(function(e) {
-      const $tds = $(this).closest("tr").find("td[contenteditable='true']");
-      let index = $tds.index(this);
-      if (e.which === 39 && index < $tds.length - 1) {
-          $tds.eq(index + 1).focus();
-      }
-      if (e.which === 37 && index > 0) {
-          $tds.eq(index - 1).focus();
-      }
-  });
+  $(document).on('keydown', 'td[contenteditable="true"]', function(e) {
+    const $this = $(this);
+    const $tds = $this.closest('tr').find('td[contenteditable="true"]');
+    const currentIndex = $tds.index(this);
+    switch (e.keyCode) {
+    case 37: // left arrow
+    if (currentIndex > 0) {
+    if (window.getSelection().anchorOffset === 0) {
+    $tds.eq(currentIndex - 1).focus();
+    }
+    }
+    break;
+    case 38: // up arrow
+    if ($this.closest('tr').prev().length) {
+    $this.closest('tr').prev().find('td[contenteditable="true"]').eq(currentIndex).focus();
+    }
+    break;
+    case 39: // right arrow
+    if (currentIndex < $tds.length - 1) {
+    if (window.getSelection().anchorOffset === this.innerHTML.length) {
+    $tds.eq(currentIndex + 1).focus();
+    }
+    }
+    break;
+    case 40: // down arrow
+    if ($this.closest('tr').next().length) {
+    $this.closest('tr').next().find('td[contenteditable="true"]').eq(currentIndex).focus();
+    }
+    break;
+    }
+    });
 }
 
 
 $(document).ready(function() {
     var editMode = false;
     $("#quickBoard tbody tr").click(function() {
-        var quickNote = $(this).find("td:first-child").text();
-        var quickCategory = $(this).find("td:last-child").text();
+        var quickNote = $(this).find("td").eq(1).text();
+        var quickCategory = $(this).find("td").eq(2).text();
         createNewEvent(quickNote,quickCategory)
       });
     $("#editBtn").click(function() {
@@ -101,8 +122,8 @@ $(document).ready(function() {
         $("#saveBtn").attr("disabled", "true");
         var updatedData = [];
         $("#quickBoard tbody tr").each(function() {
-          var quickNote = $(this).find("td:first-child").text();
-          var quickCategory = $(this).find("td:last-child").text();
+          var quickNote = $(this).find("td").eq(1).text();
+          var quickCategory = $(this).find("td").eq(2).text();
           updatedData.push({ note: quickNote, category: quickCategory });
         });
         $.ajax({
@@ -213,15 +234,16 @@ function LoadCurrentTime() {
 
 
 document.addEventListener("keydown", function(event) {
+  if (event.ctrlKey && event.key === "e") {
+    event.preventDefault();
+    createNewEvent()
+  }
   if(event.target.tagName === "TEXTAREA" || event.target.tagName === "TD") return;
   if (event.code === "Space" && event.target.tagName != "INPUT" || event.code === "Enter" && event.target.tagName != "INPUT") {
     event.preventDefault();
     toggleBtn.click();
   }
-  if (event.ctrlKey && event.key === "e") {
-    event.preventDefault();
-    createNewEvent()
-  }
+
     index = parseInt(event.code.replace("Digit", "")-1);
     let tableRow = $("#quickBoard tbody tr:eq(" + index + ")");
     tableRow.click();

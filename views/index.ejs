@@ -16,7 +16,7 @@
         <a class="nav-item nav-link" href="#"> Home</a>
       </li>
       <div class="dropdown" data-bs-toggle="dropdown">
-        <li class="nav-item nav-link dropdown">Settings</li>
+        <li class="nav-item nav-link dropdown">File</li>
          <div class="dropdown-menu ">
            <a class="dropdown-item" id="exportBtn" href="#">Export</a>
            <a class="dropdown-item" id="importBtn" href="#">Import</a>
@@ -29,27 +29,30 @@
       <div style="width: 70%;">
           <p id="timer" class="display-5 text-center">Total Log Time:</p>
           <div class="container" id="dashboard">
+            <div style="overflow: auto; max-height: 400px; display: flex;
+            flex-direction: column-reverse;" id="tableContainer">
               <table class="table table-bordered table-hover responsive" id="dashboardTable">
-                  <thead>
-                      <th scope="col" class="text-center"> Timestamp</th>
-                      <th scope="col" class="text-center">Notes</th>
-                      <th scope="col" class="text-center">Category</th>
-                  </thead>
-                  <tbody id="tableBody">
-                    <% preset.forEach((data)=>{ %>
-                      <% let parts = data.timestamp.split("At") %>
-                      <% let totalTime = parts[0]; %>
-                      <% let date = "At " + parts[1]; %>
-                      <tr>
-                          <td><%=totalTime%><br><%=date%></td>
-                          <td contenteditable = "true"><%=data.note%></td>
-                          <td contenteditable = "true"><%=data.category%></td>
-                          <td><button class="deleteBtn btn btn-danger">X</button></td>
-                      </tr>
+                <thead>
+                  <th scope="col" class="text-center"> Timestamp</th>
+                  <th scope="col" class="text-center">Notes</th>
+                  <th scope="col" class="text-center">Category</th>
+                </thead>
+                <tbody id="tableBody">
+                  <% preset.forEach((data)=>{ %>
+                    <% let parts = data.timestamp.split("At") %>
+                    <% let totalTime = parts[0]; %>
+                    <% let date = "At " + parts[1]; %>
+                    <tr>
+                      <td ><%=totalTime%><br><%=date%></td>
+                      <td contenteditable = "true"><%=data.note%></td>
+                      <td contenteditable = "true"><%=data.category%></td>
+                      <td><button class="deleteBtn btn btn-danger">X</button></td>
+                    </tr>
                   <% }); %>
-                  
-                  </tbody>
+                </tbody>
               </table>
+            </div>
+            
           </div>
           <div class="row">
               <span class="col-1"> </span>
@@ -64,11 +67,14 @@
           <p class="text-center" style="font-weight: bold;">Event Quicklist</p>
           <table class="table table-bordered" id="quickBoard">
               <tbody>
+                <% let i = 1 %>
                <% data.forEach((data)=>{ %>
                   <tr>
+                    <td><%=i%></td>
                     <td><%=data.note%></td>
                     <td><%=data.category%></td>
                     </tr>
+                    <% i +=1 %>
               <% }) %>
               </tbody>
           </table>
