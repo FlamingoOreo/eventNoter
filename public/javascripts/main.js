@@ -250,7 +250,7 @@ document.addEventListener("keydown", function(event) {
       window.isTimerRunning = false;
     }
   }
-    index = parseInt(event.code.replace("Digit", ""));
+    index = parseInt(event.code.replace("Digit", "")-1);
     let tableRow = $("#quickBoard tbody tr:eq(" + index + ")");
     tableRow.click();
 });
