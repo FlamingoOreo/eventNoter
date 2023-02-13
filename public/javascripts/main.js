@@ -2,10 +2,13 @@ const timerDisplay = document.getElementById("timer");
 let startTime;
 let timerInterval;
 let active = false;
+let counter = 1;
+let counterStop = 1;
 
 const toggleBtn = document.getElementById("toggleBtn");
 
 function startTimer() {
+
     if (active) return;
         startTime = Date.now();
         timerDisplay.style.display = "block";
@@ -20,6 +23,8 @@ function startTimer() {
         toggleBtn.innerHTML = "Stop";
         $("#eventBtn").removeAttr("disabled")
         active = true;
+        createNewEvent("","",true,false)
+
     }
 
 function stopTimer() {
@@ -27,6 +32,7 @@ function stopTimer() {
     timerDisplay.innerHTML = "Total Log Time:";
     toggleBtn.innerHTML = "Start";
     active = false;
+    createNewEvent("","",false,true);
     const eventBtn = document.getElementById("eventBtn")
     eventBtn.setAttribute("disabled",true)
 }
@@ -47,13 +53,33 @@ function padMilliseconds(num) {
     }
 
 let event
-function createNewEvent(quickNote, quickCategory){
+function createNewEvent(quickNote, quickCategory,starter,finisher){
   const currentdate = new Date(); 
   const elapsedTime = Date.now() - startTime;
   const elapsedSeconds = Math.floor(elapsedTime / 1000);
   const elapsedMinutes = Math.floor(elapsedSeconds / 60);
   const elapsedHours = Math.floor(elapsedMinutes / 60);
-  if(!active) return
+  if(starter){
+    $("#dashboard tbody").append(`<tr><td>Start Time: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td class="displayText" >Log ${counter} Start<td>
+  </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
+  $(".deleteBtn").click(function(){
+    $(this).closest("tr").remove();
+});
+  counter++
+  return
+  }
+  if(finisher){
+    $("#dashboard tbody").append(`<tr><td>End Time: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td class="displayText" >Log ${counterStop} End<td>
+  </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
+  $(".deleteBtn").click(function(){
+    $(this).closest("tr").remove();
+
+});
+  counterStop++
+  return
+
+  }
+  if(!active) return;
   if(quickNote && quickCategory){
     $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())} </td><td contenteditable='true'>${quickNote}</td><td contenteditable='true'>${quickCategory}
     </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
