@@ -37,13 +37,13 @@
                   </thead>
                   <tbody id="tableBody">
                     <% preset.forEach((data)=>{ %>
-                      <% let parts = data.timestamp.split("Date:") %>
+                      <% let parts = data.timestamp.split("At") %>
                       <% let totalTime = parts[0]; %>
-                      <% let date = "Date: " + parts[1]; %>
+                      <% let date = "At " + parts[1]; %>
                       <tr>
                           <td><%=totalTime%><br><%=date%></td>
-                          <td class="displayText"><%=data.note%></td>
-                          <td class="displayText"><%=data.category%></td>
+                          <td contenteditable = "true"><%=data.note%></td>
+                          <td contenteditable = "true"><%=data.category%></td>
                           <td><button class="deleteBtn btn btn-danger">X</button></td>
                       </tr>
                   <% }); %>
@@ -53,9 +53,9 @@
           </div>
           <div class="row">
               <span class="col-1"> </span>
-              <button id="startBtn" class="col-3 btn btn-secondary">Start</button>
+              <button id="toggleBtn" class="col-3 btn btn-secondary">Start</button>
               <span class="col-4"> </span>
-              <button id="stopBtn" class="col-3 btn btn-secondary" disabled>Stop</button>
+              <button id="eventBtn" onclick="createNewEvent()"class="col-3 btn btn-secondary" disabled>Event</button>
               <span class="col-1"></span>
           </div>
           <p class="text-center" id="localTime"></p>

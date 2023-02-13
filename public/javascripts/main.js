@@ -1,15 +1,13 @@
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn")
 const timerDisplay = document.getElementById("timer");
 let startTime;
 let timerInterval;
 let active = false;
 
+const toggleBtn = document.getElementById("toggleBtn");
 
-function startTimer(quickNote, quickCategory) {
-    if(active) return
-    if(quickNote && quickCategory){
-            startTime = Date.now();
+function startTimer() {
+    if (active) return;
+        startTime = Date.now();
         timerDisplay.style.display = "block";
         timerInterval = setInterval(function() {
             const elapsedTime = Date.now() - startTime;
@@ -19,82 +17,64 @@ function startTimer(quickNote, quickCategory) {
             const elapsedMilliseconds = elapsedTime % 1000;
             timerDisplay.innerHTML = `Total Log Time: ${pad(elapsedHours)}:${pad(elapsedMinutes % 60)}:${pad(elapsedSeconds % 60)}.${padMilliseconds(elapsedMilliseconds)}`;
         }, 1);
-        startBtn.setAttribute("disabled",true);
-        stopBtn.removeAttribute("disabled");
+        toggleBtn.innerHTML = "Stop";
+        $("#eventBtn").removeAttr("disabled")
         active = true;
-        createNewEvent(quickNote, quickCategory);
-    }     else{
-            startTime = Date.now();
-            timerDisplay.style.display = "block";
-            timerInterval = setInterval(function() {
-                const elapsedTime = Date.now() - startTime;
-                const elapsedSeconds = Math.floor(elapsedTime / 1000);
-                const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-                const elapsedHours = Math.floor(elapsedMinutes / 60);
-                const elapsedMilliseconds = elapsedTime % 1000;
-                timerDisplay.innerHTML = `Total Log Time: ${pad(elapsedHours)}:${pad(elapsedMinutes % 60)}:${pad(elapsedSeconds % 60)}.${padMilliseconds(elapsedMilliseconds)}`;
-            }, 1);
-            startBtn.setAttribute("disabled",true);
-            stopBtn.removeAttribute("disabled");
-            active = true;
-            createNewEvent();
-        }
     }
-$("#startBtn").click(function() {
-        startTimer();
-    });
-stopBtn.addEventListener('click',function(){
+
+function stopTimer() {
     clearInterval(timerInterval);
     timerDisplay.innerHTML = "Total Log Time:";
-    startBtn.removeAttribute("disabled");
-    stopBtn.setAttribute("disabled",true)
-    stopEvent()
-})
+    toggleBtn.innerHTML = "Start";
+    active = false;
+    const eventBtn = document.getElementById("eventBtn")
+    eventBtn.setAttribute("disabled",true)
+}
+
+toggleBtn.addEventListener("click", function() {
+    if (active) {
+        stopTimer();
+    } else {
+        startTimer();
+    }
+});
+
 function pad(num) {
     return num < 10 ? '0' + num : num;
     }
 function padMilliseconds(num) {
     return num < 100 ? '0' + (num < 10 ? '0' + num : num) : num;
     }
+
+let event
 function createNewEvent(quickNote, quickCategory){
-    if(quickNote && quickCategory){
-        $("#dashboard tbody").prepend(`<tr><td>Awaiting time...</td><td class="displayText">${quickNote}
-        </td><td class="displayText">${quickCategory}
-        </td></tr>`);
-    }else{
-        $("#dashboard tbody").prepend(`<tr><td>Awaiting time...</td><td><input type="text" placeholder="Enter Event Notes">
-    </td><td><input type="text" placeholder="Enter Event Category">
-    </td></tr>`);
-    }
-
-}
-
-function stopEvent() {
-    active = false;
-    const newestRow = $("#dashboard tbody tr:first-child");
+    const currentdate = new Date(); 
     const elapsedTime = Date.now() - startTime;
     const elapsedSeconds = Math.floor(elapsedTime / 1000);
     const elapsedMinutes = Math.floor(elapsedSeconds / 60);
     const elapsedHours = Math.floor(elapsedMinutes / 60);
-    newestRow.find("td").first().html(`Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')}<br>Date: ${new Date().toLocaleString().replace(",", "")}`);
-    newestRow.append(`<td><button class="deleteBtn btn btn-danger">X</button></td>`)
-    newestRow.find("td input[type='text']").replaceWith(function() {
-        return $("<div>", {
-            html: $(this).val(),
-            class: "displayText"
-        });
-    });
+    if(!active) return
+    if(quickNote && quickCategory){
+      $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())} </td><td contenteditable='true'>${quickNote}
+      </td><td contenteditable='true'>${quickCategory}
+      </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
+    }else{
+        $("#dashboard tbody").append(`<tr><td>Total Time taken: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')}<br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td contenteditable='true'><td contenteditable='true'>
+    </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
+    }
     $(".deleteBtn").click(function(){
         $(this).closest("tr").remove();
     });
+
 }
+
 
 $(document).ready(function() {
     var editMode = false;
     $("#quickBoard tbody tr").click(function() {
         var quickNote = $(this).find("td:first-child").text();
         var quickCategory = $(this).find("td:last-child").text();
-        startTimer(quickNote,quickCategory)
+        createNewEvent(quickNote,quickCategory)
       });
     $("#editBtn").click(function() {
       if (!editMode) {
@@ -148,7 +128,7 @@ $("#exportBtn").click(function () {
     });
     var link = document.createElement("a");
     link.download = "events.csv";
-    link.href = "data:text/csv," + encodeURI(csv);
+    link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
     link.click();
   });
 
@@ -173,14 +153,12 @@ $("#exportBtn").click(function () {
               var timestamp = cells[0];
               var note = cells[1];
               var category = cells[2];
-        
-              var parts = timestamp.split("Date:");
+              var parts = timestamp.split("At");
               var totalTime = parts[0];
-              var date = "Date: " + parts[1];
-        
-              $("#dashboard tbody").prepend(`<tr><td>${totalTime}<br>${date}</td><td class="displayText">${note}
-              </td><td class="displayText">${category}
-              </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
+              var date = "At " + parts[1];
+              $("#dashboard tbody").append(`<tr><td>${totalTime}<br>${date}</td><td contenteditable='true'>${note}
+      </td><td contenteditable='true'>${category}
+      </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
         
               $(".deleteBtn").click(function(){
                 $(this).closest("tr").remove();
@@ -227,33 +205,16 @@ function LoadCurrentTime() {
 document.addEventListener("keydown", function(event) {
   if(event.target.tagName === "TEXTAREA" || event.target.tagName === "TD") return;
   if (event.code === "Space" && event.target.tagName != "INPUT" || event.code === "Enter" && event.target.tagName != "INPUT") {
-    if (!window.isTimerRunning) {
-      startBtn.click();
-      window.isTimerRunning = true;
-    } else {
-      clearInterval(timerInterval);
-      timerDisplay.innerHTML = "Total Log Time:";
-      startBtn.removeAttribute("disabled");
-      stopBtn.setAttribute("disabled",true)
-      stopEvent()
-      window.isTimerRunning = false;
-    }
+    event.preventDefault();
+    toggleBtn.click();
   }
-
-  if(event.target.tagName === "INPUT"){
-    if(event.code === "Enter"){
-      clearInterval(timerInterval);
-      timerDisplay.innerHTML = "Total Log Time:";
-      startBtn.removeAttribute("disabled");
-      stopBtn.setAttribute("disabled",true)
-      stopEvent()
-      window.isTimerRunning = false;
-    }
+  if (event.ctrlKey && event.key === "e") {
+    event.preventDefault();
+    createNewEvent()
   }
     index = parseInt(event.code.replace("Digit", "")-1);
     let tableRow = $("#quickBoard tbody tr:eq(" + index + ")");
     tableRow.click();
 });
-
   window.addEventListener("load", LoadCurrentTime);
   
