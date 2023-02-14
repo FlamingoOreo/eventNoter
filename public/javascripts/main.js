@@ -1,3 +1,5 @@
+
+
 const timerDisplay = document.getElementById("timer");
 let startTime;
 let timerInterval;
@@ -249,7 +251,33 @@ $("#saveBtn").click(function () {
     },
   });
 });
-
+$("#clearBtn").click(function(){
+  var data = [];
+  Swal.fire({
+    title: 'DELETE ALL EVENTS',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete all events!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await Swal.fire(
+        'Deleted!',
+        'Events have been cleared',
+        'success'
+      )
+      $.ajax({
+        url: "/save",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data)
+      })
+      window.location.href = 'http://localhost:3000/'
+    }
+  })
+})
 
 function LoadCurrentTime() {
     const currentTimeDisplay = document.getElementById("localTime");
