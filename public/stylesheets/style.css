@@ -80,3 +80,63 @@ input[type="text"]:focus {
   border-color: #333;
   box-shadow: 0 0 10px #333;
 }
+    #dashboardTable, #quickBoard {
+        border: 1px solid #ddd;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #dashboardTable th, #dashboardTable td,
+    #quickBoard th, #quickBoard td {
+        text-align: center;
+        padding: 10px;
+    }
+
+    #dashboardTable th {
+        background-color: #f2f2f2;
+    }
+
+    #dashboardTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #quickBoard tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #quickBoard td {
+        font-weight: bold;
+    }
+
+    #quickBoard tr:first-child {
+        font-weight: bold;
+    }
+
+    #dashboardTable td {
+        border: 1px solid #ddd;
+    }
+
+    #quickBoard td {
+        border: 1px solid #ddd;
+    }
+
+    #dashboardTable th:first-child,
+    #quickBoard th:first-child {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    #dashboardTable th:last-child,
+    #quickBoard th:last-child {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    #quickBoard tr:last-child td:first-child {
+        border-bottom-left-radius: 5px;
+    }
+
+    #quickBoard tr:last-child td:last-child {
+        border-bottom-right-radius: 5px;
+    }
+

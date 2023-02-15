@@ -1,16 +1,14 @@
-
-
 const timerDisplay = document.getElementById("timer");
 let startTime;
 let timerInterval;
 let active = false;
 let counter = 1;
 let counterStop = 1;
+var editMode = false;
 
 const toggleBtn = document.getElementById("toggleBtn");
 
 function startTimer() {
-
     if (active) return;
         startTime = Date.now();
         timerDisplay.style.display = "block";
@@ -41,8 +39,23 @@ function stopTimer() {
 
 toggleBtn.addEventListener("click", function() {
     if (active) {
-        stopTimer();
+      Swal.fire({
+        title: `Do you want to stop Log${counterStop}?`,
+        text: "You won't be able to revert this!",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: `Yes, stop Log${counterStop}`
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          $(this).removeClass("btn-danger").addClass("btn-success");
+          editMode = false;
+          stopTimer();
+        }
+      })
     } else {
+        $(this).removeClass("btn-success").addClass("btn-danger");
         startTimer();
     }
 });
@@ -65,7 +78,19 @@ function createNewEvent(quickNote, quickCategory,starter,finisher){
     $("#dashboard tbody").append(`<tr><td>Start Time: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td class="displayText" >Log ${counter} Start<td>
   </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
   $(".deleteBtn").click(function(){
-    $(this).closest("tr").remove();
+    Swal.fire({
+      title: `Do you want to remove this event?`,
+      text: "You won't be able to revert this!",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        $(this).closest("tr").remove();
+      }
+    })
 });
   counter++
   return
@@ -74,8 +99,19 @@ function createNewEvent(quickNote, quickCategory,starter,finisher){
     $("#dashboard tbody").append(`<tr><td>End Time: ${elapsedHours.toString().padStart(2, '0')}:${(elapsedMinutes % 60).toString().padStart(2, '0')}:${(elapsedSeconds % 60).toString().padStart(2, '0')} <br> At time: ${currentdate.getHours()}:${pad(currentdate.getMinutes())}:${pad(currentdate.getSeconds())}</td><td class="displayText" >Log ${counterStop} End<td>
   </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
   $(".deleteBtn").click(function(){
-    $(this).closest("tr").remove();
-
+    Swal.fire({
+      title: `Do you want to remove this event?`,
+      text: "You won't be able to revert this!",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        $(this).closest("tr").remove();
+      }
+    })
 });
   counterStop++
   return
@@ -90,10 +126,20 @@ function createNewEvent(quickNote, quickCategory,starter,finisher){
   </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
   }
   $(".deleteBtn").click(function(){
-      $(this).closest("tr").remove();
-
-  });
-
+    Swal.fire({
+      title: `Do you want to remove this event?`,
+      text: "You won't be able to revert this!",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        $(this).closest("tr").remove();
+      }
+    })
+});
   $(document).on('keydown', 'td[contenteditable="true"]', function(e) {
     const $this = $(this);
     const $tds = $this.closest('tr').find('td[contenteditable="true"]');
@@ -129,7 +175,6 @@ function createNewEvent(quickNote, quickCategory,starter,finisher){
 
 
 $(document).ready(function() {
-    var editMode = false;
     $("#quickBoard tbody tr").click(function() {
         var quickNote = $(this).find("td").eq(1).text();
         var quickCategory = $(this).find("td").eq(2).text();
@@ -166,19 +211,17 @@ $(document).ready(function() {
               console.error(error);
             }
           });
-  
         editMode = false;
-
         $("#quickBoard tbody tr").click(function() {
-          var quickNote = $(this).find("td:first-child").text();
-          var quickCategory = $(this).find("td:last-child").text();
-            startTimer(quickNote, quickCategory);
+          var quickNote = $(this).find("td").eq(1).text();
+          var quickCategory = $(this).find("td").eq(2).text();
+            createNewEvent(quickNote, quickCategory);
         });
       }
     });
 });
 $("#exportBtn").click(function () {
-    var csv = "Time taken:;At time:;Note:;Category:;";
+    var csv = "Time taken:;At time:;Observation:;Category:;";
     $("#dashboardTable tr").each(function () {
       const timeIndex = $(this).find("td").first().text().indexOf("At time:");
       const totalTimeTaken = $(this).find("td").first().text().slice(0, timeIndex).trim();
@@ -232,6 +275,13 @@ $("#exportBtn").click(function () {
     input.click();
 });
 
+
+function runToast(){
+  const toast = new bootstrap.Toast(document.querySelector('.toast'));
+  toast.show();
+  
+}
+
 $("#saveBtn").click(function () {
   var data = [];
   $("#dashboardTable tbody tr").each(function () {
@@ -246,12 +296,13 @@ $("#saveBtn").click(function () {
     contentType: "application/json",
     data: JSON.stringify(data),
     success: function (response) {
-      console.log("Data saved successfully!", response);
     },
     error: function (error) {
       console.error("Error saving data:", error);
     },
   });
+  runToast()
+
 });
 $("#clearBtn").click(function(){
   var data = [];
@@ -281,6 +332,7 @@ $("#clearBtn").click(function(){
   })
 })
 
+
 function LoadCurrentTime() {
     const currentTimeDisplay = document.getElementById("localTime");
      setInterval(() => {
@@ -290,16 +342,18 @@ function LoadCurrentTime() {
 
 
 document.addEventListener("keydown", function(event) {
-  if (event.ctrlKey && event.key === "e") {
+  if (event.ctrlKey && event.key === "e" || event.ctrlKey && event.key === 'E') {
     event.preventDefault();
     createNewEvent()
+  }
+  if (event.ctrlKey && event.key === "s" || event.ctrlKey && event.key === 'S') {
+    event.preventDefault();
+    $("#saveBtn").click()
   }
   if(event.target.tagName === "TEXTAREA" || event.target.tagName === "TD") return;
   if (event.code === "Space" && event.target.tagName != "INPUT" || event.code === "Enter" && event.target.tagName != "INPUT") {
     event.preventDefault();
-    toggleBtn.click();
   }
-
     index = parseInt(event.code.replace("Digit", "")-1);
     let tableRow = $("#quickBoard tbody tr:eq(" + index + ")");
     tableRow.click();
