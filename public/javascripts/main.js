@@ -178,16 +178,18 @@ $(document).ready(function() {
     });
 });
 $("#exportBtn").click(function () {
-    var csv = "Timestamp:,Note:,Category:";
+    var csv = "Time taken:;At time:;;Note:;Category:;";
     $("#dashboardTable tr").each(function () {
-      var timestamp = $(this).find("td").first().text();
+      var timeTaken = $(this).find("td").first().text();
       var note = $(this).find("td").eq(1).text().replace(/(\r\n|\n|\r)/gm, "");
       var category = $(this).find("td").eq(2).text().replace(/(\r\n|\n|\r)/gm, "");
-      csv += timestamp + "," + note + "," + category + "\n";
+      csv += timeTaken + ";" + note + ";" + category + "\n";
     });
     var link = document.createElement("a");
     link.download = "events.csv";
-    link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+    csv = "\ufeff" + csv;
+    link.href = "data:text/csv;charset=utf-16le," + encodeURI(csv);
+    link.href = "data:text/csv;charset=ISO-8859-1," + encodeURI(csv);
     link.click();
   });
 
