@@ -178,12 +178,14 @@ $(document).ready(function() {
     });
 });
 $("#exportBtn").click(function () {
-    var csv = "Time taken:;At time:;;Note:;Category:;";
+    var csv = "Time taken:;At time:;Note:;Category:;";
     $("#dashboardTable tr").each(function () {
-      var timeTaken = $(this).find("td").first().text();
+      const timeIndex = $(this).find("td").first().text().indexOf("At time:");
+      const totalTimeTaken = $(this).find("td").first().text().slice(0, timeIndex).trim();
+      const atTime = $(this).find("td").first().text().slice(timeIndex).trim();
       var note = $(this).find("td").eq(1).text().replace(/(\r\n|\n|\r)/gm, "");
       var category = $(this).find("td").eq(2).text().replace(/(\r\n|\n|\r)/gm, "");
-      csv += timeTaken + ";" + note + ";" + category + "\n";
+      csv += totalTimeTaken + ";" + atTime + ';' + note + ";" + category + "\n";
     });
     var link = document.createElement("a");
     link.download = "events.csv";
@@ -210,14 +212,12 @@ $("#exportBtn").click(function () {
           success: function (data) {
             var lines = data.split("\n");
             for (var i = 1; i < lines.length -1; i++) {
-              var cells = lines[i].split(",");
-              var timestamp = cells[0];
-              var note = cells[1];
-              var category = cells[2];
-              var parts = timestamp.split("At");
-              var totalTime = parts[0];
-              var date = "At " + parts[1];
-              $("#dashboard tbody").append(`<tr><td>${totalTime}<br>${date}</td><td contenteditable='true'>${note}
+              var cells = lines[i].split(";");
+              var totalTime = cells[0];
+              var atTime = cells[1];
+              var note = cells[2];
+              var category = cells[3];
+              $("#dashboard tbody").append(`<tr><td>${totalTime}<br>${atTime}</td><td contenteditable='true'>${note}
       </td><td contenteditable='true'>${category}
       </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
         
