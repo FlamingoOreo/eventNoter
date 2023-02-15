@@ -264,9 +264,21 @@ $("#exportBtn").click(function () {
       </td><td contenteditable='true'>${category}
       </td><td><button class="deleteBtn btn btn-danger">X</button></td></tr>`);
         
-              $(".deleteBtn").click(function(){
-                $(this).closest("tr").remove();
-              });
+      $(".deleteBtn").click(function(){
+        Swal.fire({
+          title: `Do you want to remove this event?`,
+          text: "You won't be able to revert this!",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: `Yes`
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            $(this).closest("tr").remove();
+          }
+        })
+    });
             }
           }
         });
